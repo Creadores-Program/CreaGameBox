@@ -23,7 +23,7 @@
       </intent-filter>
     </activity>
     <service
-    android:name="org.CreadoresProgram.CreaGameBox.InputGameService"
+    android:name="org.CreadoresProgram.CreaGameBox.input.InputGameService"
     android:permission="android.permission.BIND_INPUT_METHOD">
       <intent-filter>
         <action android:name="view.InputMethod" />
@@ -32,5 +32,12 @@
         android:name="android.view.im"
         android:resource="@xml/method" />
     </service>
+    <service android:name="org.CreadoresProgram.CreaGameBox.profile.AuthenticatorService">
+      <intent-filter>
+        <action android:name="android.accounts.AccountAuthenticator" />
+      </intent-filter>
+      <meta-data android:name="android.accounts.AccountAuthenticator"
+               android:resource="@xml/authenticator" />
+     </service>
   </application>
 </manifest>
