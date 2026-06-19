@@ -1,0 +1,38 @@
+plugins {
+    id 'com.android.application'
+}
+dependencies {
+    implementation 'com.squareup.okhttp3:okhttp:3.12.13'
+    implementation files('libs/Compatv4.jar')
+    implementation files('libs/zappcompats.jar')
+    implementation files('libs/customTabs.jar')
+}
+
+android {
+    namespace 'org.CreadoresProgram.CreaGameBox'
+    compileSdkVersion 20
+
+    defaultConfig {
+        minSdkVersion 20
+        targetSdkVersion 35
+        versionCode 1
+        versionName "1.0.0-beta"
+    }
+    signingConfigs {
+        debug {
+            storeFile file('CreaGameBox.keystore')
+            storePassword System.getenv("CREAGAMEBOXKEYCONTREAPP")
+            keyAlias "CreaGameBoxkey"
+            keyPassword System.getenv("CREAGAMEBOXKEYCONTREAPP")
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
