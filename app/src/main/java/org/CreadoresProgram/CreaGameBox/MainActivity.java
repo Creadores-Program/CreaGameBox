@@ -1,5 +1,4 @@
 package org.CreadoresProgram.CreaGameBox;
-import org.CredoresProgram.WebViewCREA.WebViewCreaClient;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -7,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.webkit.WebView;
 import android.webkit.WebSettings;
+import android.webkit.WebViewClient;
 import android.graphics.Color;
 
 public class MainActivity extends Activity {
@@ -16,7 +16,7 @@ public class MainActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.layout_main);
     WebView webView = (WebView) findViewById(R.id.webview);
-    webView.setWebViewClient(new WebViewCreaClient());
+    webView.setWebViewClient(new WebViewClient());
     WebSettings webSettings = webView.getSettings();
     webSettings.setJavaScriptEnabled(true);
     webSettings.setDomStorageEnabled(true);
