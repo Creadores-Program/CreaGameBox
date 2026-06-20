@@ -12,16 +12,23 @@ import android.widget.FrameLayout;
 
 import java.util.HashMap;
 
+import org.CreadoresProgram.CreaGameBox.openUrl.OpenURLJS;
+import org.CreadoresProgram.CreaGameBox.profile.AccountManagerJS;
+
 public class MainActivity extends Activity {
   private FrameLayout screenAndroid;
   private WebView webviewHome;
   private WebView webViewApp;
   private HashMap<Integer, WebView> menuUsers = new HashMap<>();
+  private OpenURLJS openUrljsApi;
+  private AccountManagerJS accountManagerSystem;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.layout_main);
     this.screenAndroid = findViewById(R.id.creagameboxScreen);
+    this.openUrljsApi = new OpenURLJS(this);
+    this.accountManagerSystem = new AccountManagerJS(this);
     WebView webViewHome = new WebView(this);
     webViewHome.setLayoutParams(new FrameLayout.LayoutParams(match_parent, match_parent));
     webViewHome.setWebViewClient(new WebViewClient());
