@@ -1,3 +1,4 @@
+package org.CreadoresProgram.CreaGameBox.profile;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
