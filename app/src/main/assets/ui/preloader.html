@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8"/>
+  </head>
+  <body>
+    <script>
+      let profiles = JSON.parse(AccountManagerSystem.getAccounts());
+      if(profiles.length < 1){
+        window.location.href = "./welcome/welcome.html";
+      }else{
+        window.location.href = "./home/home.html";
+      }
+    </script>
+  </body>
+</html>
