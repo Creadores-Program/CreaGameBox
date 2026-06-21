@@ -10,6 +10,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.util.Base64;
 
 import org.json.JSONArray;
@@ -124,5 +126,28 @@ public class SystemAPIJS{
     JSONArray appsJsonArray = new JSONArray();
     //add apps CreaGameBox
     return appsJsonArray.toString();
+  }
+  @JavascriptInterface
+  public int getWifiSignalLevel(){
+    try{
+      WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+      if (wifiManager == null || !wifiManager.isWifiEnabled()) {
+        return -1;
+      }
+      WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+      if (wifiInfo == null || wifiInfo.getNetworkId() == -1) {
+        return -1;
+      }
+      int rssi = wifiInfo.getRssi();
+      int totalLevel = 5;
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        return wifiManager.calculateSignalLevel(rssi);
+      }else{
+        return WifiManager.calculateSignalLevel(rssi, totalLevel);
+      }
+    }catch(Exception e){
+      e.printStackTrace();
+      return -1;
+    }
   }
 }
