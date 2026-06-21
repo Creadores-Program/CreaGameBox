@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.widget.FrameLayout;
 
 import java.util.HashMap;
+import java.util.ArrayList;
 
 import org.CreadoresProgram.CreaGameBox.openUrl.OpenURLJS;
 import org.CreadoresProgram.CreaGameBox.profile.AccountManagerJS;
@@ -20,6 +21,7 @@ public class MainActivity extends Activity {
   private WebView webviewHome;
   private WebView webViewApp;
   private HashMap<Integer, WebView> menuUsers = new HashMap<>();
+  private ArrayList<Account> onlineAccounts = new ArrayList<>();
   private OpenURLJS openUrljsApi;
   private AccountManagerJS accountManagerSystem;
   @Override
