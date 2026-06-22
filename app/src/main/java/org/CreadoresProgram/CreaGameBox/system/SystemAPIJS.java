@@ -5,6 +5,7 @@ import android.content.Context;
 import android.webkit.JavascriptInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -20,6 +21,8 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Locale;
 import java.io.ByteArrayOutputStream;
+
+import org.CreadoresProgram.CreaGameBox.MainActivity;
 
 public class SystemAPIJS{
   private Context context;
@@ -149,5 +152,22 @@ public class SystemAPIJS{
       e.printStackTrace();
       return -1;
     }
+  }
+  @JavascriptInterface
+  public String getCurrentVersionCGB() {
+    try {
+      PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+      return pInfo.versionName;
+    } catch (Exception e) {
+      return "0.0.0";
+    }
+  }
+  @JavascriptInterface
+  public void setDeviceIdP1(int id){
+    ((MainActivity) this.context).setDeviceIdP1(id);
+  }
+  @JavascriptInterface
+  public int getDeviceIdP1(){
+    ((MainActivity) this.context).getDeviceIdP1();
   }
 }
