@@ -35,6 +35,7 @@ public class MainActivity extends Activity {
   private int deviceIdP1 = -1;
   private int menuOpen = -1;
   private boolean appOnly1P = false;
+  private volatile int currentDeviceId = -1;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -73,11 +74,20 @@ public class MainActivity extends Activity {
   }
   @Override
   public boolean dispatchKeyEvent(KeyEvent event){
+    int idController = event.getDeviceId();
+    int source = event.getSource();
+    if((source & InputDevice.SOURCE_GAMEPAD) != InputDevice.SOURCE_GAMEPAD && 
+      (source & InputDevice.SOURCE_JOYSTICK) != InputDevice.SOURCE_JOYSTICK){
+      return super.dispatchKeyEvent(event);
+    }
+    int keyCode = event.getKeyCode();
+    if(keyCode == KeyEvent.KEYCODE_BUTTON_START){
+      //
+    }
     //no device
     if(deviceIdP1 == -1){
       return super.dispatchKeyEvent(event);
     }
-    int idController = event.getDeviceId();
     //menu open
     if(menuOpen >= 0){
       if(idController != Integer.parseInt(accountManager.getUserData(onlineAccounts.get(menuOpen), "controllerId"))){
