@@ -81,8 +81,11 @@ public class MainActivity extends Activity {
       return super.dispatchKeyEvent(event);
     }
     int keyCode = event.getKeyCode();
-    if(keyCode == KeyEvent.KEYCODE_BUTTON_START){
-      //
+    int action = event.getAction();
+    if(keyCode == KeyEvent.KEYCODE_BUTTON_START || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE){
+      if (action == KeyEvent.ACTION_DOWN) {
+        this.currentDeviceId = idController;
+      }
     }
     //no device
     if(deviceIdP1 == -1){
@@ -109,6 +112,11 @@ public class MainActivity extends Activity {
       return super.onGenericMotionEvent(event);
     }
     int idController = event.getDeviceId();
+    int source = event.getSource();
+    if((source & InputDevice.SOURCE_GAMEPAD) != InputDevice.SOURCE_GAMEPAD && 
+      (source & InputDevice.SOURCE_JOYSTICK) != InputDevice.SOURCE_JOYSTICK){
+      return super.onGenericMotionEvent(event);
+    }
     //menu open
     if(menuOpen >= 0){
       if(idController != Integer.parseInt(accountManager.getUserData(onlineAccounts.get(menuOpen), "controllerId"))){
@@ -130,5 +138,10 @@ public class MainActivity extends Activity {
   }
   public int getDeviceIdP1(){
     return this.deviceIdP1;
+  }
+  public int getCurrentDeviceId(){
+    int device = this.currentDeviceId;
+    this.currentDeviceId = -1;
+    return device;
   }
 }
