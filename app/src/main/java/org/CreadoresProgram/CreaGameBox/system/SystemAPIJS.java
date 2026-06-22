@@ -168,6 +168,10 @@ public class SystemAPIJS{
   }
   @JavascriptInterface
   public int getDeviceIdP1(){
-    ((MainActivity) this.context).getDeviceIdP1();
+    return ((MainActivity) this.context).getDeviceIdP1();
+  }
+  @JavascriptInterface
+  public int getCurrentDeviceId(){
+    return ((MainActivity) this.context).getCurrentDeviceId();
   }
 }
