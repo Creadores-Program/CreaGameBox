@@ -148,6 +148,10 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     }
     return super.onGenericMotionEvent(event);
   }
+  @Override
+  public void onInputDeviceRemoved(int deviceId) {
+    //timeout
+  }
 
   public void setDeviceIdP1(int id){
     this.deviceIdP1 = id;
