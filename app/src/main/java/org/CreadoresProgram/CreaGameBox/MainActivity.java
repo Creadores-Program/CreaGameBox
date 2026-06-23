@@ -44,7 +44,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     this.screenAndroid = findViewById(R.id.creagameboxScreen);
     this.openUrljsApi = new OpenURLJS(this);
     this.accountManager = AccountManager.get(this);
-    this.accountManagerSystem = new AccountManagerJS(this);
+    this.accountManagerSystem = new AccountManagerJS(this, this.onlineAccounts);
     this.systemApi = new SystemAPIJS(this);
     this.inputManager = (InputManager) getSystemService(Context.INPUT_SERVICE);
     if (inputManager != null) {
