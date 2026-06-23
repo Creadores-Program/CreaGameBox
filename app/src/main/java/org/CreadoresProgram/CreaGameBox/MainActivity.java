@@ -102,8 +102,9 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
             this.deviceIdP1 = idController;
             return super.dispatchKeyEvent(event);
           }
-          //open Menu
-          menuOpen = onlineAccounts.size();
+          //openMenu(tempProfile);
+        }else{
+          openMenu(profileOn);
         }
       }
     }
@@ -151,6 +152,18 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
   @Override
   public void onInputDeviceRemoved(int deviceId) {
     //timeout
+  }
+
+  private void openMenu(Account profile){
+    openMenu(profile, true);
+  }
+  private void openMenu(Account profile, boolean isOnline){
+    if(!isOnline){
+      synchronized(this.onlineAccounts){
+        this.onlineAccounts.add(profile);
+        this.menuOpen = this.onlineAccounts.indexOf(profile);
+      }
+    }
   }
 
   public void setDeviceIdP1(int id){
