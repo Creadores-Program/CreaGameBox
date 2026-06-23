@@ -6,13 +6,17 @@ import android.webkit.JavascriptInterface;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
+
 public class AccountManagerJS{
     private Context context;
     private AccountManager accountManager;
     private Account[] currentAccounts;
-    public AccountManagerJS(Context context) {
+    private ArrayList<Account> onlineAccounts;
+    public AccountManagerJS(Context context, ArrayList<Account> onlineAccounts) {
         this.context = context;
         this.accountManager = AccountManager.get(context);
+        this.onlineAccounts = onlineAccounts;
     }
     @JavascriptInterface
     public String getAccounts() {
@@ -36,5 +40,10 @@ public class AccountManagerJS{
             return data != null ? data : "";
         }
         return "";
+    }
+    @JavascriptInterface
+    public void addOnlineAccount(int index){
+        this.onlineAccounts.add(currentAccounts[index]);
+        //call update in apps open or home
     }
 }
