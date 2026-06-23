@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.widget.FrameLayout;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.hardware.input.InputManager;
 
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import org.CreadoresProgram.CreaGameBox.openUrl.OpenURLJS;
 import org.CreadoresProgram.CreaGameBox.profile.AccountManagerJS;
 import org.CreadoresProgram.CreaGameBox.system.SystemAPIJS;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements InputManager.InputDeviceListener {
   private FrameLayout screenAndroid;
   private WebView webviewHome;
   private WebView webViewApp;
@@ -45,6 +46,10 @@ public class MainActivity extends Activity {
     this.accountManager = AccountManager.get(this);
     this.accountManagerSystem = new AccountManagerJS(this);
     this.systemApi = new SystemAPIJS(this);
+    this.inputManager = (InputManager) getSystemService(Context.INPUT_SERVICE);
+    if (inputManager != null) {
+        inputManager.registerInputDeviceListener(this, null);
+    }
     WebView webViewHome = new WebView(this);
     webViewHome.setLayoutParams(new FrameLayout.LayoutParams(match_parent, match_parent));
     webViewHome.setWebViewClient(new WebViewClient());
@@ -69,7 +74,7 @@ public class MainActivity extends Activity {
     //add js interfaces
     webViewHome.setBackgroundColor(Color.BLACK);
     this.webviewHome = webViewHome;
-    //load Home url
+    webViewHome.loadUrl("file:///android_asset/ui/preloader.html");
     screenAndroid.addView(webViewHome);
   }
   @Override
@@ -82,14 +87,25 @@ public class MainActivity extends Activity {
     }
     int keyCode = event.getKeyCode();
     int action = event.getAction();
-    if(keyCode == KeyEvent.KEYCODE_BUTTON_START || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE){
+    if(keyCode == KeyEvent.KEYCODE_BUTTON_START || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE || keyCode == KeyEvent.KEYCODE_BUTTON_MODE){
       if (action == KeyEvent.ACTION_DOWN) {
         this.currentDeviceId = idController;
+        Account profileOn = null;
+        for(Account profile : onlineAccounts){
+          if(Integer.parseInt(accountManager.getUserData(profile, "controllerId")) != idController){
+            continue;
+          }
+          profileOn = profile;
+        }
+        if(profileOn == null){
+          if(deviceIdP1 == -1){
+            this.deviceIdP1 = idController;
+            return super.dispatchKeyEvent(event);
+          }
+          //open Menu
+          menuOpen = onlineAccounts.size();
+        }
       }
-    }
-    //no device
-    if(deviceIdP1 == -1){
-      return super.dispatchKeyEvent(event);
     }
     //menu open
     if(menuOpen >= 0){
