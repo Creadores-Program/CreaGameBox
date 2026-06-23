@@ -37,6 +37,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
   private int menuOpen = -1;
   private boolean appOnly1P = false;
   private volatile int currentDeviceId = -1;
+  private boolean noLogin = true;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -101,10 +102,21 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
           if(deviceIdP1 == -1){
             this.deviceIdP1 = idController;
             return super.dispatchKeyEvent(event);
+          }else if(noLogin && this.deviceIdP1 == idController){
+            return super.dispatchKeyEvent(event);
+          }else if(noLogin || menuOpen >= 0){
+            return true;
+          }else{
+            Account tempProfile = new Account("Player"+(java.util.UUID.randomUUID().toString().substring(0, 8)), "com.creagamebox.account");
+            accountManager.addAccountExplicitly(tempProfile, null, null);
+            accountManager.setUserData(tempProfile, "controllerId", String.valueOf(idController));
+            accountManager.setUserData(tempProfile, "isTemporary", "true");
+            openMenu(tempProfile, false);
+            return true;
           }
-          //openMenu(tempProfile);
         }else{
           openMenu(profileOn);
+          return true;
         }
       }
     }
@@ -176,5 +188,11 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     int device = this.currentDeviceId;
     this.currentDeviceId = -1;
     return device;
+  }
+  public boolean isNoLogin(){
+    return this.noLogin;
+  }
+  public void setNoLogin(boolean noLogin){
+    this.noLogin = noLogin
   }
 }
