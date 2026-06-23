@@ -88,9 +88,9 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     }
     int keyCode = event.getKeyCode();
     int action = event.getAction();
+    this.currentDeviceId = idController;
     if(keyCode == KeyEvent.KEYCODE_BUTTON_START || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE || keyCode == KeyEvent.KEYCODE_BUTTON_MODE){
       if (action == KeyEvent.ACTION_DOWN) {
-        this.currentDeviceId = idController;
         Account profileOn = null;
         for(Account profile : onlineAccounts){
           if(Integer.parseInt(accountManager.getUserData(profile, "controllerId")) != idController){
@@ -115,6 +115,10 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
             return true;
           }
         }else{
+          if(menuOpen != -1 && idController == Integer.parseInt(accountManager.getUserData(onlineAccounts.get(menuOpen), "controllerId"))){
+            closeMenu(idController);
+            return true;
+          }
           openMenu(profileOn);
           return true;
         }
@@ -163,7 +167,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
   }
   @Override
   public void onInputDeviceRemoved(int deviceId) {
-    //timeout
+    //remove login
   }
 
   private void openMenu(Account profile){
@@ -177,6 +181,20 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       }
     }
   }
+  private void closeMenu(int deviceId){
+    WebView profileMenu = menuUsers.get(deviceId);
+    if(profileMenu == null){
+      return;
+    }
+    stopWebView(profileMenu);
+  }
+
+  private void stopWebView(WebView webview){
+    webview.onPause();
+    webview.pauseTimers();
+    webview.setVisibility(View.GONE);
+  }
+  private void startWebView(WebView webview){}
 
   public void setDeviceIdP1(int id){
     this.deviceIdP1 = id;
