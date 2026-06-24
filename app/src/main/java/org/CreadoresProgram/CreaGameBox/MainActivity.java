@@ -73,9 +73,9 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     webSettings.setAllowFileAccessFromFileURLs(true);
     webSettings.setAllowUniversalAccessFromFileURLs(true);
     webViewHome.setLayerType(WebView.LAYER_TYPE_HARDWARE, null);
-    webviewHome.addJavascriptInterface(this.openUrljsApi);
-    webviewHome.addJavascriptInterface(this.accountManagerSystem);
-    webViewHome.addJavascriptInterface(this.systemApi);
+    webviewHome.addJavascriptInterface(this.openUrljsApi, "OpenURLAPI");
+    webviewHome.addJavascriptInterface(this.accountManagerSystem, "AccountManagerSystem");
+    webViewHome.addJavascriptInterface(this.systemApi, "SystemAPI");
     webViewHome.setBackgroundColor(Color.BLACK);
     this.webviewHome = webViewHome;
     webViewHome.loadUrl("file:///android_asset/ui/preloader.html");
