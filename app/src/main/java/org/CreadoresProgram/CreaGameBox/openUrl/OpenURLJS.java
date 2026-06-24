@@ -1,6 +1,6 @@
 package org.CreadoresProgram.CreaGameBox.openUrl;
 
-import android.support.customtabs.CustomTabsIntent;
+import androidx.browser.customtabs.CustomTabsIntent;
 import android.webkit.JavascriptInterface;
 import android.content.Context;
 import android.net.Uri;
