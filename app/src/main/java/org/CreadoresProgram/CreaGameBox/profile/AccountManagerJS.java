@@ -38,7 +38,9 @@ public class AccountManagerJS{
     @JavascriptInterface
     public String getAccounts() {
         currentAccounts = accountManager.getAccountsByType("com.creagamebox.account");
-        removeTempAccounts();
+        if(!alrRemTemp){
+            removeTempAccounts();
+        }
         JSONArray jsonArray = new JSONArray();
         for (Account account : currentAccounts) {
             jsonArray.put(account.name);
@@ -60,8 +62,24 @@ public class AccountManagerJS{
         return "";
     }
     @JavascriptInterface
-    public void addOnlineAccount(int index){
+    public void addOnlineAccount(int index, int controllerId){
         this.onlineAccounts.add(currentAccounts[index]);
         //call update in apps open or home
+    }
+    @JavascriptInterface
+    public void createAccount(String name, int controllerId){
+        //delete account temp by controllerId
+        Account profile = new Account(name, "com.creagamebox.account");
+        accountManager.addAccountExplicitly(profile, null, null);
+        accountManager.setUserData(profile, "controllerId", String.valueOf(controllerId));
+    }
+    @JavascriptInterface
+    public void deleteAccount(int index){
+        Account profile = currentAccounts[index];
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            accountManager.removeAccount(profile, null, null, null);
+        }else{
+            accountManager.removeAccount(profile, null, null);
+        }
     }
 }
