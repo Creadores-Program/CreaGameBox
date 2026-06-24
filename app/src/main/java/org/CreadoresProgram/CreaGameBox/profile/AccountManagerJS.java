@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class AccountManagerJS{
     private Context context;
     private AccountManager accountManager;
-    private Account[] currentAccounts;
     private ArrayList<Account> onlineAccounts;
     private boolean alrRemTemp = false;
     public AccountManagerJS(Context context, ArrayList<Account> onlineAccounts) {
@@ -37,24 +36,23 @@ public class AccountManagerJS{
     }
     @JavascriptInterface
     public String getAccounts() {
-        currentAccounts = accountManager.getAccountsByType("com.creagamebox.account");
         if(!alrRemTemp){
             removeTempAccounts();
         }
         JSONArray jsonArray = new JSONArray();
-        for (Account account : currentAccounts) {
+        for (Account account : accountManager.getAccountsByType("com.creagamebox.account")) {
             jsonArray.put(account.name);
         }
         return jsonArray.toString();
     }
     @JavascriptInterface
-    public void setUserData(int index, String key, String value) {
+    public void setUserData(String name, String key, String value) {
         if (currentAccounts != null && index >= 0 && index < currentAccounts.length) {
             accountManager.setUserData(currentAccounts[index], key, value);
         }
     }
     @JavascriptInterface
-    public String getUserData(int index, String key) {
+    public String getUserData(String name, String key) {
         if (currentAccounts != null && index >= 0 && index < currentAccounts.length) {
             String data = accountManager.getUserData(currentAccounts[index], key);
             return data != null ? data : "";
@@ -62,9 +60,12 @@ public class AccountManagerJS{
         return "";
     }
     @JavascriptInterface
-    public void addOnlineAccount(int index, int controllerId){
+    public void addOnlineAccount(String name, int controllerId){
         this.onlineAccounts.add(currentAccounts[index]);
-        //call update in apps open or home
+    }
+    @JavascriptInterface
+    public void removeOnlineAccount(String name){
+        this.onlineAccounts.remove();
     }
     @JavascriptInterface
     public void createAccount(String name, int controllerId){
@@ -74,12 +75,28 @@ public class AccountManagerJS{
         accountManager.setUserData(profile, "controllerId", String.valueOf(controllerId));
     }
     @JavascriptInterface
-    public void deleteAccount(int index){
-        Account profile = currentAccounts[index];
+    public void deleteAccount(String name){
+        Account profile = getProfileByName(name);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             accountManager.removeAccount(profile, null, null, null);
         }else{
             accountManager.removeAccount(profile, null, null);
         }
+    }
+    private Account getProfileOnlineByName(String name){
+        for(Account profile : this.onlineAccounts){
+            if(profile.name.equals(name)){
+                return profile;
+            }
+        }
+        return null;
+    }
+    private Account getProfileByName(String name){
+        for(Account profile : accountManager.getAccountsByType("com.creagamebox.account")){
+            if(profile.name.equals(name)){
+                return profile;
+            }
+        }
+        return null;
     }
 }
