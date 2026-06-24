@@ -8,6 +8,7 @@ import android.webkit.WebView;
 import android.webkit.WebSettings;
 import android.webkit.WebViewClient;
 import android.graphics.Color;
+import android.view.View;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -72,7 +73,9 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     webSettings.setAllowFileAccessFromFileURLs(true);
     webSettings.setAllowUniversalAccessFromFileURLs(true);
     webViewHome.setLayerType(WebView.LAYER_TYPE_HARDWARE, null);
-    //add js interfaces
+    webviewHome.addJavascriptInterface(this.openUrljsApi);
+    webviewHome.addJavascriptInterface(this.accountManagerSystem);
+    webViewHome.addJavascriptInterface(this.systemApi);
     webViewHome.setBackgroundColor(Color.BLACK);
     this.webviewHome = webViewHome;
     webViewHome.loadUrl("file:///android_asset/ui/preloader.html");
@@ -168,6 +171,52 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
   @Override
   public void onInputDeviceRemoved(int deviceId) {
     //remove login
+    if(noLogin && deviceId == this.deviceIdP1){
+      this.deviceIdP1 = -1;
+    }
+    if(deviceId == this.deviceIdP1){
+      return;
+    }
+    for(Account account : this.onlineAccounts){
+      if(Integer.parseInt(accountManager.getUserData(account, "controllerId")) == deviceId){
+        synchronized(this.onlineAccounts){
+          if(menuOpen == this.onlineAccounts.indexOf(account)){
+            closeMenu(deviceId);
+          }
+          this.onlineAccounts.remove(account);
+        }
+      }
+    }
+    synchronized(this.menuUsers){
+      WebView webuser = this.menuUsers.remove(deviceId);
+      webuser.destroy();
+    }
+  }
+  @Override
+  protected void onPause(){
+    super.onPause();
+    if(menuOpen != -1){
+      stopWebView(this.menuUsers.get(Integer.parseInt(accountManager.getUserData(this.onlineAccounts.get(menuOpen), "controllerId"))), false);
+      return;
+    }
+    if(webViewApp != null){
+      stopWebView(webViewApp, false);
+      return;
+    }
+    stopWebView(webViewHome);
+  }
+  @Override
+  protected void onResume(){
+    super.onResume();
+    if(menuOpen != -1){
+      startWebView(this.menuUsers.get(Integer.parseInt(accountManager.getUserData(this.onlineAccounts.get(menuOpen), "controllerId"))));
+      return;
+    }
+    if(webViewApp != null){
+      startWebView(webViewApp);
+      return;
+    }
+    startWebView(webViewHome);
   }
 
   private void openMenu(Account profile){
@@ -179,6 +228,16 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
         this.onlineAccounts.add(profile);
         this.menuOpen = this.onlineAccounts.indexOf(profile);
       }
+      //init WebView
+    }
+    this.menuOpen = this.onlineAccounts.indexOf(profile);
+    if(webViewApp != null){
+      stopWebView(webViewApp, false);
+    }else{
+      stopWebView(webViewHome, false);
+    }
+    if(isOnline){
+      startWebView(this.menuUsers.get(Integer.parseInt(accountManager.getUserData(this.onlineAccounts.get(menuOpen), "controllerId"))));
     }
   }
   private void closeMenu(int deviceId){
@@ -186,15 +245,21 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     if(profileMenu == null){
       return;
     }
-    stopWebView(profileMenu);
+    stopWebView(profileMenu, true);
   }
 
-  private void stopWebView(WebView webview){
+  private void stopWebView(WebView webview, boolean setInvisible){
     webview.onPause();
     webview.pauseTimers();
-    webview.setVisibility(View.GONE);
+    if(setInvisible){
+      webview.setVisibility(View.GONE);
+    }
   }
-  private void startWebView(WebView webview){}
+  private void startWebView(WebView webview){
+    webview.resumeTimers();
+    webview.onResume();
+    webview.setVisibility(View.VISIBLE);
+  }
 
   public void setDeviceIdP1(int id){
     this.deviceIdP1 = id;

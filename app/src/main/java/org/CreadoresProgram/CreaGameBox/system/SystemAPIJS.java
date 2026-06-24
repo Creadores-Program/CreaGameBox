@@ -174,4 +174,12 @@ public class SystemAPIJS{
   public int getCurrentDeviceId(){
     return ((MainActivity) this.context).getCurrentDeviceId();
   }
+  @JavascriptInterface
+  public boolean isNoLogin(){
+    return ((MainActivity) this.context).isNoLogin();
+  }
+  @JavascriptInterface
+  public void setNoLogin(boolean login){
+    ((MainActivity) this.context).setNoLogin(login);
+  }
 }

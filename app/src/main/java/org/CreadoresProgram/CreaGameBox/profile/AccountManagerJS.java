@@ -3,6 +3,7 @@ package org.CreadoresProgram.CreaGameBox.profile;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.webkit.JavascriptInterface;
+import android.os.Build;
 
 import org.json.JSONArray;
 
@@ -13,14 +14,31 @@ public class AccountManagerJS{
     private AccountManager accountManager;
     private Account[] currentAccounts;
     private ArrayList<Account> onlineAccounts;
+    private boolean alrRemTemp = false;
     public AccountManagerJS(Context context, ArrayList<Account> onlineAccounts) {
         this.context = context;
         this.accountManager = AccountManager.get(context);
         this.onlineAccounts = onlineAccounts;
     }
+    private void removeTempAccounts(){
+        if(alrRemTemp){
+            return;
+        }
+        this.alrRemTemp = true;
+        for(Account profile : this.currentAccounts){
+            if(accountManager.getUserData(profile, "isTemporary") != null && accountManager.getUserData(profile, "isTemporary").equals("true")){
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    accountManager.removeAccount(profile, null, null, null);
+                }else{
+                    accountManager.removeAccount(profile, null, null);
+                }
+            }
+        }
+    }
     @JavascriptInterface
     public String getAccounts() {
         currentAccounts = accountManager.getAccountsByType("com.creagamebox.account");
+        removeTempAccounts();
         JSONArray jsonArray = new JSONArray();
         for (Account account : currentAccounts) {
             jsonArray.put(account.name);
