@@ -58,9 +58,13 @@ public class ThemeJS {
                 this.chclient.setTheme(android.R.style.Theme_DeviceDefault_Dialog);
                 break;
             case "devicedef_alert":
-                //code
+                this.chclient.setTheme(android.R.style.Theme_DeviceDefault_Dialog_Alert);
+                break;
             case "devicedef_light":
+                this.chclient.setTheme(android.R.style.Theme_DeviceDefault_Light_Dialog);
+                break;
             case "devicedef_light_alert":
+                this.chclient.setTheme(android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
             default:
                 this.chclient.setTheme(android.R.style.Theme_Holo_Light_Dialog);
                 break;
