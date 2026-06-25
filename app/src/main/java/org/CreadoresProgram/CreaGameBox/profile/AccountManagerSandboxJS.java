@@ -25,21 +25,30 @@ public class AccountManagerSandboxJS {
         return jsonArray.toString();
     }
     @JavascriptInterface
-    public void setUserData(int index, String key, String value) {
-        if (index >= 0 && index < onlineAccounts.size()) {
-            Account accountTarget = onlineAccounts.get(index);
-            String keysandbox = appUUID + "_" + key;
-            accountManager.setUserData(accountTarget, keysandbox, value);
+    public void setUserData(String name, String key, String value) {
+        Account profile = getProfileOnlineByName(name);
+        if (profile == null) {
+            return;
         }
+        String keysandbox = appUUID + "_" + key;
+        accountManager.setUserData(profile, keysandbox, value);
     }
     @JavascriptInterface
-    public String getUserData(int index, String key) {
-        if (index >= 0 && index < onlineAccounts.size()) {
-            Account accountTarget = onlineAccounts.get(index);
-            String keysandbox = appUUID + "_" + key;
-            String data = accountManager.getUserData(accountTarget, keysandbox);
-            return data != null ? data : "";
+    public String getUserData(String name, String key) {
+        Account profile = getProfileOnlineByName(name);
+        if (profile == null) {
+            return "";
         }
-        return "";
+        String keysandbox = appUUID + "_" + key;
+        String data = accountManager.getUserData(profile, keysandbox);
+        return data != null ? data : "";
+    }
+    private Account getProfileOnlineByName(String name){
+        for(Account profile : this.onlineAccounts){
+            if(profile.name.equals(name)){
+                return profile;
+            }
+        }
+        return null;
     }
 }

@@ -228,6 +228,8 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
         this.onlineAccounts.add(profile);
         this.menuOpen = this.onlineAccounts.indexOf(profile);
       }
+      WebView menuView = new WebView(this);
+      menuView.setLayoutParams(new FrameLayout.LayoutParams(match_parent, match_parent));
       //init WebView
     }
     this.menuOpen = this.onlineAccounts.indexOf(profile);

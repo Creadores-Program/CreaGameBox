@@ -47,25 +47,40 @@ public class AccountManagerJS{
     }
     @JavascriptInterface
     public void setUserData(String name, String key, String value) {
-        if (currentAccounts != null && index >= 0 && index < currentAccounts.length) {
-            accountManager.setUserData(currentAccounts[index], key, value);
+        if (currentAccounts != null) {
+            Account profile = getProfileByName(name);
+            if(profile == null){
+                return;
+            }
+            accountManager.setUserData(profile, key, value);
         }
     }
     @JavascriptInterface
     public String getUserData(String name, String key) {
-        if (currentAccounts != null && index >= 0 && index < currentAccounts.length) {
-            String data = accountManager.getUserData(currentAccounts[index], key);
-            return data != null ? data : "";
+        if (currentAccounts != null) {
+            Account profile = getProfileByName(name);
+            if(profile != null){
+                String data = accountManager.getUserData(profile, key);
+                return data != null ? data : "";
+            }
         }
         return "";
     }
     @JavascriptInterface
     public void addOnlineAccount(String name, int controllerId){
-        this.onlineAccounts.add(currentAccounts[index]);
+        Account profile = getProfileByName(name);
+        if(profile == null){
+            return;
+        }
+        this.onlineAccounts.add(profile);
     }
     @JavascriptInterface
     public void removeOnlineAccount(String name){
-        this.onlineAccounts.remove();
+        Account profile = getProfileByName(name);
+        if(profile == null){
+            return;
+        }
+        this.onlineAccounts.remove(profile);
     }
     @JavascriptInterface
     public void createAccount(String name, int controllerId){
@@ -77,6 +92,9 @@ public class AccountManagerJS{
     @JavascriptInterface
     public void deleteAccount(String name){
         Account profile = getProfileByName(name);
+        if(profile == null){
+            return;
+        }
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             accountManager.removeAccount(profile, null, null, null);
         }else{
