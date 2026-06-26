@@ -7,9 +7,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.EditText;
 import android.webkit.JsPromptResult;
-import android.graphics.Color;
+import android.view.ContextThemeWrapper;
 public class ChromeClient extends WebChromeClient{
     private Context context;
+    private ContextThemeWrapper contextTheme;
     private int theme;
     private String title;
     public ChromeClient(Context context, int theme, String title){
@@ -19,6 +20,7 @@ public class ChromeClient extends WebChromeClient{
     }
     public void setTheme(int theme){
         this.theme = theme;
+        this.contextTheme = new ContextThemeWrapper(this.context, theme);
     }
     public void setTitle(String title){
         this.title = title;
@@ -58,9 +60,8 @@ public class ChromeClient extends WebChromeClient{
     }
     @Override
     public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
-        final EditText input = new EditText(context);
+        final EditText input = new EditText(contextTheme);
         input.setText(defaultValue);
-        input.setTextColor(Color.BLACK);//this modify
         new AlertDialog.Builder(context, theme)
             .setTitle(title)
             .setMessage(message)
