@@ -70,4 +70,10 @@ public class ThemeJS {
                 break;
         }
     }
+    public void setTitle(String title){
+        if(title.length() > 500){
+            return;
+        }
+        this.chclient.setTitle(title);
+    }
 }

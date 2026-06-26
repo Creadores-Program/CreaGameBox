@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import org.CreadoresProgram.CreaGameBox.openUrl.OpenURLJS;
 import org.CreadoresProgram.CreaGameBox.profile.AccountManagerJS;
 import org.CreadoresProgram.CreaGameBox.system.SystemAPIJS;
+import org.CreadoresProgram.CreaGameBox.engine.*;
 
 public class MainActivity extends Activity implements InputManager.InputDeviceListener {
   private FrameLayout screenAndroid;
@@ -54,7 +55,9 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     }
     WebView webViewHome = new WebView(this);
     webViewHome.setLayoutParams(new FrameLayout.LayoutParams(match_parent, match_parent));
-    webViewHome.setWebViewClient(new WebViewClient());
+    ChromeClient chclient = new ChromeClient(this, android.R.style.Theme_Holo_Light_Dialog, "CreaGameBox");
+    ThemeJS themejs = new ThemeJS(chclient);
+    webViewHome.setWebChromeClient(chclient);
     WebSettings webSettings = webViewHome.getSettings();
     webSettings.setJavaScriptEnabled(true);
     webSettings.setDomStorageEnabled(true);
@@ -76,6 +79,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     webviewHome.addJavascriptInterface(this.openUrljsApi, "OpenURLAPI");
     webviewHome.addJavascriptInterface(this.accountManagerSystem, "AccountManagerSystem");
     webViewHome.addJavascriptInterface(this.systemApi, "SystemAPI");
+    webViewHome.addJavascriptInterface(themejs, "Theme");
     webViewHome.setBackgroundColor(Color.BLACK);
     this.webviewHome = webViewHome;
     webViewHome.loadUrl("file:///android_asset/ui/preloader.html");
