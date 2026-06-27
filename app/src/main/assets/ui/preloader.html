@@ -7,9 +7,9 @@
     <script>
       let profiles = JSON.parse(AccountManagerSystem.getAccounts());
       if(profiles.length < 1){
-        window.location.href = "./welcome/welcome.html";
+        window.location.replace("./welcome/welcome.html");
       }else{
-        window.location.href = "./home/home.html";
+        window.location.replace("./home/home.html");
       }
     </script>
   </body>

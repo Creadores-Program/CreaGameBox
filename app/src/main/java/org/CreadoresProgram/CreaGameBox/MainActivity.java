@@ -76,8 +76,8 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     webSettings.setAllowFileAccessFromFileURLs(true);
     webSettings.setAllowUniversalAccessFromFileURLs(true);
     webViewHome.setLayerType(WebView.LAYER_TYPE_HARDWARE, null);
-    webviewHome.addJavascriptInterface(this.openUrljsApi, "OpenURLAPI");
-    webviewHome.addJavascriptInterface(this.accountManagerSystem, "AccountManagerSystem");
+    webViewHome.addJavascriptInterface(this.openUrljsApi, "OpenURLAPI");
+    webViewHome.addJavascriptInterface(this.accountManagerSystem, "AccountManagerSystem");
     webViewHome.addJavascriptInterface(this.systemApi, "SystemAPI");
     webViewHome.addJavascriptInterface(themejs, "Theme");
     webViewHome.setBackgroundColor(Color.BLACK);
@@ -193,7 +193,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     }
     synchronized(this.menuUsers){
       WebView webuser = this.menuUsers.remove(deviceId);
-      webuser.destroy();
+      destroyWebView(webuser);
     }
   }
   @Override
@@ -207,7 +207,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       stopWebView(webViewApp, false);
       return;
     }
-    stopWebView(webViewHome);
+    stopWebView(webviewHome);
   }
   @Override
   protected void onResume(){
@@ -220,7 +220,25 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       startWebView(webViewApp);
       return;
     }
-    startWebView(webViewHome);
+    startWebView(webviewHome);
+  }
+  @Override
+  public void onBackPressed() {
+    if(menuOpen >= 0){
+      int controllerId = Integer.parseInt(accountManager.getUserData(this.onlineAccounts.get(menuOpen), "controllerId"));
+      closeMenu(controllerId);
+      return;
+    }
+    if(webViewApp != null){
+      if (webViewApp.canGoBack()) {
+        webViewApp.goBack();
+      } else {
+        destroyWebView(webViewApp);
+        this.webViewApp = null;
+        this.appOnly1P = false;
+        startWebView(webviewHome);
+      }
+    }
   }
 
   private void openMenu(Account profile){
@@ -234,7 +252,35 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       }
       WebView menuView = new WebView(this);
       menuView.setLayoutParams(new FrameLayout.LayoutParams(match_parent, match_parent));
-      //init WebView
+      ChromeClient chclient = new ChromeClient(this, android.R.style.Theme_Holo_Light_Dialog, "CreaGameBox");
+      ThemeJS themejs = new ThemeJS(chclient);
+      menuView.setWebChromeClient(chclient);
+      WebSettings webSettings = menuView.getSettings();
+      webSettings.setJavaScriptEnabled(true);
+      webSettings.setDomStorageEnabled(true);
+      webSettings.setAllowFileAccess(true);
+      webSettings.setAllowContentAccess(true);
+      webSettings.setDatabaseEnabled(true);
+      webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+      webSettings.setBuiltInZoomControls(false);
+      webSettings.setDisplayZoomControls(false);
+      webSettings.setSupportZoom(false);
+      webSettings.setUseWideViewPort(true);
+      webSettings.setLoadWithOverviewMode(true);
+      webSettings.setMediaPlaybackRequiresUserGesture(false);
+      webSettings.setAppCacheEnabled(true);
+      webSettings.setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
+      webSettings.setAllowFileAccessFromFileURLs(true);
+      webSettings.setAllowUniversalAccessFromFileURLs(true);
+      menuView.setLayerType(WebView.LAYER_TYPE_HARDWARE, null);
+      menuView.addJavascriptInterface(this.openUrljsApi, "OpenURLAPI");
+      menuView.addJavascriptInterface(this.accountManagerSystem, "AccountManagerSystem");
+      menuView.addJavascriptInterface(this.systemApi, "SystemAPI");
+      menuView.addJavascriptInterface(themejs, "Theme");
+      menuView.setBackgroundColor(0x00000000);
+      menuView.loadUrl("file:///android_asset/ui/menu/menu.html");
+      screenAndroid.addView(menuView);
+      this.menuUsers.put(Integer.parseInt(accountManager.getUserData(profile, "controllerId")), menuView);
     }
     this.menuOpen = this.onlineAccounts.indexOf(profile);
     if(webViewApp != null){
@@ -243,7 +289,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       stopWebView(webViewHome, false);
     }
     if(isOnline){
-      startWebView(this.menuUsers.get(Integer.parseInt(accountManager.getUserData(this.onlineAccounts.get(menuOpen), "controllerId"))));
+      startWebView(this.menuUsers.get(Integer.parseInt(accountManager.getUserData(profile, "controllerId"))));
     }
   }
   private void closeMenu(int deviceId){
@@ -252,6 +298,12 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       return;
     }
     stopWebView(profileMenu, true);
+    this.menuOpen = -1;
+    if(webViewApp != null){
+      startWebView(webViewApp);
+    }else{
+      startWebView(webviewHome);
+    }
   }
 
   private void stopWebView(WebView webview, boolean setInvisible){
@@ -265,6 +317,17 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     webview.resumeTimers();
     webview.onResume();
     webview.setVisibility(View.VISIBLE);
+    webview.bringToFront();
+    screenAndroid.requestLayout();
+    webview.requestFocus();
+    screenAndroid.invalidate();
+  }
+  private void destroyWebView(WebView webview){
+    screenAndroid.removeView(webview);
+    webview.stopLoading();
+    webview.loadUrl("about:blank");
+    webview.destroy();
+    screenAndroid.requestLayout();
   }
 
   public void setDeviceIdP1(int id){
