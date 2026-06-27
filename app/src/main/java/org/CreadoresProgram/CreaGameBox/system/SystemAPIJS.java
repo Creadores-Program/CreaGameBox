@@ -78,7 +78,9 @@ public class SystemAPIJS{
     }
   }
   @JavascriptInterface
-  public void openApp(String uuid){}
+  public void openApp(String uuid){
+    ((MainActivity) context).openApp(uuid);
+  }
   @JavascriptInterface
   public String getAndroidApps(){
     PackageManager pm = context.getPackageManager();

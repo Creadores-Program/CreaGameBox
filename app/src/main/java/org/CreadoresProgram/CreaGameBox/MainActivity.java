@@ -292,6 +292,25 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       startWebView(this.menuUsers.get(Integer.parseInt(accountManager.getUserData(profile, "controllerId"))));
     }
   }
+  public void openApp(String uuid){
+    String appRute = "apps/"+uuid;
+    String[] systemApp = this.getAssets().list(appRute);
+    boolean isSistemApp = false;
+    if(systemApp != null && systemApp.lenght > 0){
+      isSistemApp = true;
+    }
+    if(!isSistemApp){
+      File userApp = new File(this.getFilesDir(), appRute);
+      if((!userApp.exists()) || (!userApp.isDirectory())){
+        return;
+      }
+    }
+    if(webViewApp != null){
+      destroyWebView(webViewApp);
+      this.webViewApp = null;
+      this.appOnly1P = false;
+    }
+  }
   private void closeMenu(int deviceId){
     WebView profileMenu = menuUsers.get(deviceId);
     if(profileMenu == null){
