@@ -1,0 +1,42 @@
+/*
+ * @Author: Jcp2612
+ * @Link: https://github.com/jcp2612-oficial
+*/
+input{
+  border: 4px solid ;
+  background: #0c435a;
+  font-family: 'Segoe UI', sans-serif;
+  outline: none;
+  border-radius: 8px;
+  border-image: linear-gradient(to right, #00bfff, #18ffe4) 1;
+  color: white;
+}
+
+button{
+  background: #0c425a;
+  border: 4px solid transparent;
+  background-clip: padding-box;
+  cursor: pointer;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+button::before {
+  content: '';
+  top: -4px; right: -4px; bottom: -4px; left: -4px;
+  z-index: -1;
+  border-radius: inherit; 
+  background: linear-gradient(to right, #00bfff, #18ffe4);
+}
+
+button::before:hover{
+  background: linear-gradient(to right, #00bfff, #18ffe4);
+}
+
+
+*:focus {
+  background: #0c435ad5;
+  outline: 4px solid white;
+  border-image: linear-gradient(to right, #00bfff, #18ffe4) 1;
+}
