@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.widget.EditText;
 import android.webkit.JsPromptResult;
 import android.view.ContextThemeWrapper;
+
+import androidx.annotation.StyleRes;
 public class ChromeClient extends WebChromeClient{
     private Context context;
     private ContextThemeWrapper contextTheme;
@@ -18,9 +20,13 @@ public class ChromeClient extends WebChromeClient{
         this.setTitle(title);
         this.setTheme(theme);
     }
-    public void setTheme(int theme){
+    public void setTheme(@StyleRes int theme){
         this.theme = theme;
-        this.contextTheme = new ContextThemeWrapper(this.context, theme);
+        if(this.contextTheme == null){
+            this.contextTheme = new ContextThemeWrapper(this.context, theme);
+        }else{
+            this.contextTheme.setTheme(theme);
+        }
     }
     public void setTitle(String title){
         this.title = title;
