@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Locale;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 import org.CreadoresProgram.CreaGameBox.MainActivity;
 
@@ -80,6 +81,21 @@ public class SystemAPIJS{
   @JavascriptInterface
   public void openApp(String uuid){
     ((MainActivity) context).openApp(uuid);
+  }
+  @JavascriptInterface
+  public void installAppFragment(String uuid, String fileName, String fileBase64){
+    String appRute = "apps/"+uuid;
+    File carpetApp = new File(context.getFilesDir(), appRute);
+    if(!carpetApp.exists()){
+      carpetApp.mkdirs();
+    }
+    File fileApp = new File(carpetApp, fileName);
+    byte dataN = Base64.decode(fileBase64, Base64.NO_WRAP);
+    if(fileApp.exists()){
+      if(fileApp.lenght() == dataN.length){
+        //verify bytes
+      }
+    }
   }
   @JavascriptInterface
   public String getAndroidApps(){
