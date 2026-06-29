@@ -17,8 +17,14 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.hardware.input.InputManager;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.CreadoresProgram.CreaGameBox.openUrl.OpenURLJS;
 import org.CreadoresProgram.CreaGameBox.profile.AccountManagerJS;
@@ -278,7 +284,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       menuView.addJavascriptInterface(this.systemApi, "SystemAPI");
       menuView.addJavascriptInterface(themejs, "Theme");
       menuView.setBackgroundColor(0x00000000);
-      menuView.loadUrl("file:///android_asset/ui/menu/menu.html");
+      menuView.loadUrl("file:///android_asset/ui/menu/menu.html?user="+profile.name);
       screenAndroid.addView(menuView);
       this.menuUsers.put(Integer.parseInt(accountManager.getUserData(profile, "controllerId")), menuView);
     }
@@ -299,8 +305,8 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     if(systemApp != null && systemApp.lenght > 0){
       isSistemApp = true;
     }
+    File userApp = new File(this.getFilesDir(), appRute);
     if(!isSistemApp){
-      File userApp = new File(this.getFilesDir(), appRute);
       if((!userApp.exists()) || (!userApp.isDirectory())){
         return;
       }
@@ -310,6 +316,42 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       this.webViewApp = null;
       this.appOnly1P = false;
     }
+    try{}catch(Exception e){
+      e.printStackTrace();
+      destroyWebView(webViewApp);
+      this.webViewApp = null;
+      this.appOnly1P = false;
+      startWebView(webviewHome);
+    }
+  }
+  public void deleteApp(String uuid){
+    String appRute = "apps/"+uuid;
+    String[] systemApp = this.getAssets().list(appRute);
+    if(systemApp != null && systemApp.lenght > 0){
+      return;
+    }
+    File userApp = new File(this.getFilesDir(), appRute);
+    if(!userApp.exists()){
+      return;
+    }
+    if(!userApp.isDirectory()){
+      userApp.delete();
+      return;
+    }
+    deteleAppCarpet(userApp);
+  }
+  private void deteleAppCarpet(File carpet){
+    File[] files = carpet.listFiles();
+    if(files != null){
+      for(File file : files){
+        if(file.isDirectory()){
+          deteleAppCarpet(file);
+        }else{
+          file.delete();
+        }
+      }
+    }
+    carpet.delete();
   }
   private void closeMenu(int deviceId){
     WebView profileMenu = menuUsers.get(deviceId);

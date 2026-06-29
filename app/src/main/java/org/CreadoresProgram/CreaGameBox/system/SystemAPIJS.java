@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Locale;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
 
 import org.CreadoresProgram.CreaGameBox.MainActivity;
 
@@ -93,8 +95,44 @@ public class SystemAPIJS{
     byte dataN = Base64.decode(fileBase64, Base64.NO_WRAP);
     if(fileApp.exists()){
       if(fileApp.lenght() == dataN.length){
-        //verify bytes
+        FileInputStream fis = null;
+        boolean exacts = true;
+        try{
+          fis = new FileInputStream(fileApp);
+          byte[] buffer = new byte[8192];
+          int readBytes;
+          int pos = 0;
+          while((readBytes = fis.read(buffer)) != -1){
+            for(int i = 0; i < readBytes; i++){
+              if(buffer[i] != dataN[pos + i]){
+                exacts = false;
+                break;
+              }
+            }
+            if(!exacts){
+              break;
+            }
+            pos += readBytes;
+          }
+        }catch(Exception e){
+          exacts = false;
+          e.printStackTrace();
+        }finally{
+          if(fis != null) fis.close();
+        }
+        if(exacts){
+          return;
+        }
       }
+    }
+    FileOutputStream fos = null;
+    try{
+      fos = new FileOutputStream(fileApp);
+      fos.write(dataN);
+    }catch(Exception e){
+      e.printStackTrace();
+    }finally{
+      if(fos != null) fos.close();
     }
   }
   @JavascriptInterface
