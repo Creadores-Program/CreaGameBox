@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.webkit.WebView;
 import android.webkit.WebSettings;
-import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
 import android.graphics.Color;
 import android.view.View;
@@ -345,9 +344,11 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       manifestIS.read(buffer);
       manifestIS.close();
       manifest = new JSONObject(new String(buffer, "UTF-8"));
+      this.appOnly1P = manifest.optBoolean("only1p", false);
       this.webViewApp = new WebView(this);
       webViewApp.setLayoutParams(new FrameLayout.LayoutParams(match_parent, match_parent));
-      ChromeClient chclient = new ChromeClient(this, android.R.style.Theme_Holo_Light_Dialog, manifest.getString("name"));
+      webViewApp.setWebViewClient(new WebviewClient(this, uuid, (isSistemApp ? null : userApp)));
+      ChromeClient chclient = new ChromeClient(this, android.R.style.Theme_Holo_Light_Dialog, manifest.optString("name", "CreaGameBox App"));
       ThemeJS themejs = new ThemeJS(chclient);
       webViewApp.setWebChromeClient(chclient);
       WebSettings webSettings = webViewApp.getSettings();
@@ -370,6 +371,33 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       if(isSistemApp){
         webViewApp.addJavascriptInterface(this.accountManagerSystem, "AccountManagerSystem");
         webViewApp.addJavascriptInterface(this.systemApi, "SystemAPI");
+        webSettings.setAllowFileAccess(true);
+        webSettings.setAllowContentAccess(true);
+        webSettings.setAllowFileAccessFromFileURLs(true);
+        webSettings.setAllowUniversalAccessFromFileURLs(true);
+      }else{
+        webSettings.setAllowFileAccess(false);
+        webSettings.setAllowContentAccess(false);
+        webSettings.setAllowFileAccessFromFileURLs(false);
+        webSettings.setAllowUniversalAccessFromFileURLs(false);
+        if(manifest.has("permissions") && !manifest.isNull("permissions")){
+          JSONArray permissionsArray = manifest.getJSONArray("permissions");
+          for (int i = 0; i < permissionsArray.length(); i++) {
+            String permission = permissionsArray.optString(i, "");
+            if (permission.equals("ALLOW_FILE_ACCESS")) {
+                webSettings.setAllowFileAccess(true);
+            } 
+            else if (permission.equals("ALLOW_CONTENT_ACCESS")) {
+                webSettings.setAllowContentAccess(true);
+            } 
+            else if (permission.equals("ALLOW_FILE_ACCESS_FROM_URLS")) {
+                webSettings.setAllowFileAccessFromFileURLs(true);
+            } 
+            else if (permission.equals("ALLOW_UNIVERSAL_ACCESS_FROM_URLS")) {
+                webSettings.setAllowUniversalAccessFromFileURLs(true);
+            }
+          }
+        }
       }
       webViewApp.setBackgroundColor(Color.BLACK);
       screenAndroid.addView(webViewApp);
