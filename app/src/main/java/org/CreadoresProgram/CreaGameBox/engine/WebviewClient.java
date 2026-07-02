@@ -4,6 +4,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebViewClient;
 import android.webkit.WebView;
+import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 import androidx.annotation.Nullable;
@@ -16,15 +17,27 @@ public class WebviewClient extends WebViewClient{
     private final WebViewAssetLoader ruteApp;
     public WebviewClient(MainActivity context, String uuidApp, @Nullable File userApp){
         this.context = context;
+        WebViewAssetLoader.AssetsPathHandler assetRute = new WebViewAssetLoader.AssetsPathHandler(context);
         WebViewAssetLoader.Builder bruteApp = new WebViewAssetLoader.Builder()
             .setDomain(uuidApp)
-            .addPathHandler("/themes/", new WebViewAssetLoader.AssetsPathHandler(context))
-            .addPathHandler("/libs/", new WebViewAssetLoader.AssetsPathHandler(context));
+            .addPathHandler("/themes/", assetRute)
+            .addPathHandler("/libs/", assetRute);
         if(userApp == null){
-            //assets
+            bruteApp.addPathHandler("/", new SAppPathHandler(context, "apps/"+uuidApp+"/"));
         }else{
-            bruteApp = bruteApp.addPathHandler("/", new WebViewAssetLoader.InternalStoragePathHandler(context, userApp));
+            bruteApp.addPathHandler("/", new WebViewAssetLoader.InternalStoragePathHandler(context, userApp));
         }
         this.ruteApp = bruteApp.build();
+    }
+    @Override
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Nullable
+    public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+        return ruteApp.shouldInterceptRequest(request.getUrl());
+    }
+    @Override
+    @Nullable
+    public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+        return ruteApp.shouldInterceptRequest(android.net.Uri.parse(url));
     }
 }
