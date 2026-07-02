@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.webkit.WebView;
 import android.webkit.WebSettings;
 import android.webkit.WebViewClient;
+import android.webkit.WebChromeClient;
 import android.graphics.Color;
 import android.view.View;
 import android.view.InputDevice;
@@ -16,6 +17,7 @@ import android.widget.FrameLayout;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.hardware.input.InputManager;
+import androidx.annotation.Nullable;
 
 import org.json.JSONObject;
 
@@ -246,6 +248,19 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       }
     }
   }
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == 9001 && ChromeClient.mUploadMessage != null) {
+            Uri[] results = null;
+            if (resultCode == RESULT_OK && data != null) {
+                results = WebChromeClient.FileChooserParams.parseResult(res, data);
+            }
+            ChromeClient.mUploadMessage.onReceiveValue(results);
+            ChromeClient.mUploadMessage = null;
+        }
+    }
+  }
 
   private void openMenu(Account profile){
     openMenu(profile, true);
@@ -316,7 +331,49 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       this.webViewApp = null;
       this.appOnly1P = false;
     }
-    try{}catch(Exception e){
+    try{
+      byte[] buffer;
+      InputStream manifestIS;
+      JSONObject manifest;
+      if(isSistemApp){
+        manifestIS = this.getAssets().open(appRute + "/manifest.json");
+      }else{
+        manifestIS = (InputStream) new FileInputStream(userApp);
+      }
+      int size = manifestIS.available();
+      buffer = new byte[size];
+      manifestIS.read(buffer);
+      manifestIS.close();
+      manifest = new JSONObject(new String(buffer, "UTF-8"));
+      this.webViewApp = new WebView(this);
+      webViewApp.setLayoutParams(new FrameLayout.LayoutParams(match_parent, match_parent));
+      ChromeClient chclient = new ChromeClient(this, android.R.style.Theme_Holo_Light_Dialog, manifest.getString("name"));
+      ThemeJS themejs = new ThemeJS(chclient);
+      webViewApp.setWebChromeClient(chclient);
+      WebSettings webSettings = webViewApp.getSettings();
+      webSettings.setJavaScriptEnabled(true);
+      webSettings.setDomStorageEnabled(true);
+      webSettings.setDatabaseEnabled(true);
+      webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+      webSettings.setBuiltInZoomControls(false);
+      webSettings.setDisplayZoomControls(false);
+      webSettings.setSupportZoom(false);
+      webSettings.setUseWideViewPort(true);
+      webSettings.setLoadWithOverviewMode(true);
+      webSettings.setMediaPlaybackRequiresUserGesture(false);
+      webSettings.setAppCacheEnabled(true);
+      webSettings.setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
+      webViewApp.setLayerType(WebView.LAYER_TYPE_HARDWARE, null);
+      webViewApp.addJavascriptInterface(this.openUrljsApi, "OpenURLAPI");
+      webViewApp.addJavascriptInterface(new AccountManagerSandboxJS(this, uuid, this.onlineAccounts), "AccountManager");
+      webViewApp.addJavascriptInterface(themejs, "Theme");
+      if(isSistemApp){
+        webViewApp.addJavascriptInterface(this.accountManagerSystem, "AccountManagerSystem");
+        webViewApp.addJavascriptInterface(this.systemApi, "SystemAPI");
+      }
+      webViewApp.setBackgroundColor(Color.BLACK);
+      screenAndroid.addView(webViewApp);
+    }catch(Exception e){
       e.printStackTrace();
       destroyWebView(webViewApp);
       this.webViewApp = null;

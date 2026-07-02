@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.CreadoresProgram.CreaGameBox" android:versionCode="1" android:versionName="v1.0.0-beta">
-  <uses-sdk android:minSdkVersion="20" android:targetSdkVersion="35" />
+  <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="35" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,6 +12,7 @@
   <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> 
   <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+  <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
   <application android:icon="@drawable/ic_launcher" android:label="@string/app_name" android:theme="@style/AppTheme">
     <activity android:name="org.CreadoresProgram.CreaGameBox.MainActivity"
         android:label="@string/app_name" android:launchMode="singleInstance" android:stateNotNeeded="true" android:exported="true" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:configChanges="orientation|screenSize|keyboard|keyboardHidden|navigation">

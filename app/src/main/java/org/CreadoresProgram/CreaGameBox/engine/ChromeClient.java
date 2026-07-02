@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.EditText;
 import android.webkit.JsPromptResult;
+import android.webkit.ValueCallback;
 import android.view.ContextThemeWrapper;
 
 import androidx.annotation.StyleRes;
@@ -15,6 +16,7 @@ public class ChromeClient extends WebChromeClient{
     private ContextThemeWrapper contextTheme;
     private int theme;
     private String title;
+    public static ValueCallback<Uri[]> mUploadMessage;
     public ChromeClient(Context context, int theme, String title){
         this.context = context;
         this.setTitle(title);
@@ -85,5 +87,25 @@ public class ChromeClient extends WebChromeClient{
             .setCancelable(false)
             .create().show();
         return true;
+    }
+    @Override
+    public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+        if (mUploadMessage != null) {
+            mUploadMessage.onReceiveValue(null);
+        }
+        mUploadMessage = filePathCallback;
+        Intent intent = fileChooserParams.createIntent();
+        context.startActivityForResult(intent, 9001);
+        return true;
+    }
+    public void handleResult(int resultCode, Intent data) {
+        if (mUploadMessage == null) return;
+
+        Uri[] results = null;
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            results = WebChromeClient.FileChooserParams.parseResult(resultCode, data);
+        }
+        mUploadMessage.onReceiveValue(results);
+        mUploadMessage = null;
     }
 }
