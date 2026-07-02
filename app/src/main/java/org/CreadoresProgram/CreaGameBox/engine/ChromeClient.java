@@ -98,14 +98,4 @@ public class ChromeClient extends WebChromeClient{
         context.startActivityForResult(intent, 9001);
         return true;
     }
-    public void handleResult(int resultCode, Intent data) {
-        if (mUploadMessage == null) return;
-
-        Uri[] results = null;
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            results = WebChromeClient.FileChooserParams.parseResult(resultCode, data);
-        }
-        mUploadMessage.onReceiveValue(results);
-        mUploadMessage = null;
-    }
 }
