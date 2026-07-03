@@ -85,6 +85,10 @@ public class SystemAPIJS{
     ((MainActivity) context).openApp(uuid);
   }
   @JavascriptInterface
+  public void closeApp(){
+    ((MainActivity) context).closeApp();
+  }
+  @JavascriptInterface
   public void installAppFragment(String uuid, String fileName, String fileBase64){
     String appRute = "apps/"+uuid;
     File carpetApp = new File(context.getFilesDir(), appRute);
@@ -134,6 +138,10 @@ public class SystemAPIJS{
     }finally{
       if(fos != null) fos.close();
     }
+  }
+  @JavascriptInterface
+  public void deleteApp(String uuid){
+    ((MainActivity) context).deleteApp(uuid);
   }
   @JavascriptInterface
   public String getAndroidApps(){

@@ -28,8 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.CreadoresProgram.CreaGameBox.openUrl.OpenURLJS;
-import org.CreadoresProgram.CreaGameBox.profile.AccountManagerJS;
-import org.CreadoresProgram.CreaGameBox.system.SystemAPIJS;
+import org.CreadoresProgram.CreaGameBox.profile.*;
+import org.CreadoresProgram.CreaGameBox.system.*;
 import org.CreadoresProgram.CreaGameBox.engine.*;
 
 public class MainActivity extends Activity implements InputManager.InputDeviceListener {
@@ -41,6 +41,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
   private OpenURLJS openUrljsApi;
   private AccountManagerJS accountManagerSystem;
   private SystemAPIJS systemApi;
+  private SystemAPISandboxJS systemApiSandb;
   private AccountManager accountManager;
   private int deviceIdP1 = -1;
   private int menuOpen = -1;
@@ -56,6 +57,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     this.accountManager = AccountManager.get(this);
     this.accountManagerSystem = new AccountManagerJS(this, this.onlineAccounts);
     this.systemApi = new SystemAPIJS(this);
+    this.systemApiSandb = new SystemAPISandboxJS(this);
     this.inputManager = (InputManager) getSystemService(Context.INPUT_SERVICE);
     if (inputManager != null) {
         inputManager.registerInputDeviceListener(this, null);
@@ -240,10 +242,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       if (webViewApp.canGoBack()) {
         webViewApp.goBack();
       } else {
-        destroyWebView(webViewApp);
-        this.webViewApp = null;
-        this.appOnly1P = false;
-        startWebView(webviewHome);
+        closeApp();
       }
     }
   }
@@ -251,13 +250,12 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == 9001 && ChromeClient.mUploadMessage != null) {
-            Uri[] results = null;
-            if (resultCode == RESULT_OK && data != null) {
-                results = WebChromeClient.FileChooserParams.parseResult(res, data);
-            }
-            ChromeClient.mUploadMessage.onReceiveValue(results);
-            ChromeClient.mUploadMessage = null;
-        }
+      Uri[] results = null;
+      if (resultCode == RESULT_OK && data != null) {
+        results = WebChromeClient.FileChooserParams.parseResult(res, data);
+      }
+      ChromeClient.mUploadMessage.onReceiveValue(results);
+      ChromeClient.mUploadMessage = null;
     }
   }
 
@@ -376,6 +374,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
         webSettings.setAllowFileAccessFromFileURLs(true);
         webSettings.setAllowUniversalAccessFromFileURLs(true);
       }else{
+        webViewApp.addJavascriptInterface(this.systemApiSandb, "SystemAPI");
         webSettings.setAllowFileAccess(false);
         webSettings.setAllowContentAccess(false);
         webSettings.setAllowFileAccessFromFileURLs(false);
@@ -403,11 +402,14 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       screenAndroid.addView(webViewApp);
     }catch(Exception e){
       e.printStackTrace();
-      destroyWebView(webViewApp);
-      this.webViewApp = null;
-      this.appOnly1P = false;
-      startWebView(webviewHome);
+      closeApp();
     }
+  }
+  public void closeApp(){
+    destroyWebView(webViewApp);
+    this.webViewApp = null;
+    this.appOnly1P = false;
+    startWebView(webviewHome);
   }
   public void deleteApp(String uuid){
     String appRute = "apps/"+uuid;

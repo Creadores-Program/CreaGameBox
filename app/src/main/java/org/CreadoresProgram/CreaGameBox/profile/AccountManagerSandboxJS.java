@@ -43,6 +43,14 @@ public class AccountManagerSandboxJS {
         String data = accountManager.getUserData(profile, keysandbox);
         return data != null ? data : "";
     }
+    @JavascriptInterface
+    public String getUserControllerId(String name){
+        Account profile = getProfileOnlineByName(name);
+        if(profile == null){
+            return "";
+        }
+        String data = accountManager.getUserData(profile, "controllerId");
+    }
     private Account getProfileOnlineByName(String name){
         for(Account profile : this.onlineAccounts){
             if(profile.name.equals(name)){
