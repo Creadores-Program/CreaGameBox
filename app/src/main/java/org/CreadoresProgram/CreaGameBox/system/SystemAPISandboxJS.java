@@ -86,10 +86,6 @@ public class SystemAPISandboxJS{
     }
   }
   @JavascriptInterface
-  public void setDeviceIdP1(int id){
-    ((MainActivity) this.context).setDeviceIdP1(id);
-  }
-  @JavascriptInterface
   public int getDeviceIdP1(){
     return ((MainActivity) this.context).getDeviceIdP1();
   }
