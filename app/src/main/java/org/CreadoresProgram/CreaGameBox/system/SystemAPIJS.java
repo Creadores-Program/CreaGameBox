@@ -1,18 +1,14 @@
 package org.CreadoresProgram.CreaGameBox.system;
 
-import android.os.Build;
 import android.content.Context;
 import android.webkit.JavascriptInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageInfo;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.util.Base64;
 
 import org.json.JSONArray;
