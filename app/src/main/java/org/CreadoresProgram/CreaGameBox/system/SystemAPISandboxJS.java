@@ -13,7 +13,7 @@ import java.util.Locale;
 import org.CreadoresProgram.CreaGameBox.MainActivity;
 
 public class SystemAPISandboxJS{
-  private Context context;
+  protected Context context;
   public SystemAPISandboxJS(Context context){
     this.context = context;
   }
