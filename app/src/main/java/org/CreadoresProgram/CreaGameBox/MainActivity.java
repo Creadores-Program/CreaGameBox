@@ -400,6 +400,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
       }
       webViewApp.setBackgroundColor(Color.BLACK);
       screenAndroid.addView(webViewApp);
+      webViewApp.loadUrl("https://"+uuid+"/index.html");
     }catch(Exception e){
       e.printStackTrace();
       closeApp();

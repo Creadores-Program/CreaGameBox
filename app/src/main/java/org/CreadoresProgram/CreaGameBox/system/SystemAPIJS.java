@@ -191,8 +191,49 @@ public class SystemAPIJS{
   @JavascriptInterface
   public String getApps(){
     JSONArray appsJsonArray = new JSONArray();
-    //add apps CreaGameBox
+    for(String appId : context.getAssets().list("apps/")){
+      appsJsonArray.put(getManifestApp(appId));
+    }
+    File[] userApps = new File(context.getFilesDir(), "apps").listFiles();
+    if(userApps != null){
+      for(File appDir : userApps){
+        appsJsonArray.put(getManifestApp(appDir.getName()));
+      }
+    }
     return appsJsonArray.toString();
+  }
+  private JSONObject getManifestApp(String uuid){
+    String appRute = "apps/"+uuid;
+    String[] systemApp = context.getAssets().list(appRute);
+    boolean isSistemApp = false;
+    if(systemApp != null && systemApp.lenght > 0){
+      isSistemApp = true;
+    }
+    File userApp = new File(context.getFilesDir(), appRute);
+    if(!isSistemApp){
+      if((!userApp.exists()) || (!userApp.isDirectory())){
+        return;
+      }
+    }
+    try{
+      byte[] buffer;
+      InputStream manifestIS;
+      if(isSistemApp){
+        manifestIS = context.getAssets().open(appRute + "/manifest.json");
+      }else{
+        manifestIS = (InputStream) new FileInputStream(userApp);
+      }
+      int size = manifestIS.available();
+      buffer = new byte[size];
+      manifestIS.read(buffer);
+      manifestIS.close();
+      JSONObject manifest = new JSONObject(new String(buffer, "UTF-8"));
+      manifest.put("isSistemApp", isSistemApp);
+      return manifest;
+    }catch(Exception e){
+      e.printStackTrace();
+      return new JSONObject();
+    }
   }
   @JavascriptInterface
   public int getWifiSignalLevel(){
