@@ -1,6 +1,7 @@
 package org.CreadoresProgram.CreaGameBox.system;
 
 import android.content.Context;
+import android.os.Build;
 import android.webkit.JavascriptInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,12 +11,13 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Base64;
+import android.Manifest;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.Locale;
+import java.util.ArrayList;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -205,5 +207,30 @@ public class SystemAPIJS extends SystemAPISandboxJS {
   @JavascriptInterface
   public void setNoLogin(boolean login){
     ((MainActivity) this.context).setNoLogin(login);
+  }
+  @JavascriptInterface
+  public void requestPerms(){
+    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+      ArrayList<String> perms = new ArrayList<>();
+      if (context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        perms.add(Manifest.permission.RECORD_AUDIO);
+      }
+      if (context.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        perms.add(Manifest.permission.CAMERA);
+      }
+      if (Build.VERSION.SDK_INT >= 33) {
+        if (context.checkSelfPermission(Manifest.permission.READ_MEDIA_VIDEO) != PackageManager.PERMISSION_GRANTED) {
+          perms.add(Manifest.permission.READ_MEDIA_VIDEO);
+        }
+      } else {
+        if (context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+          perms.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+    }
+
+    if (!perms.isEmpty()) {
+      context.requestPermissions(perms.toArray(new String[0]), 102);
+    }
+    }
   }
 }

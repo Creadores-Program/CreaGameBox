@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.widget.EditText;
 import android.webkit.JsPromptResult;
 import android.webkit.ValueCallback;
+import android.webkit.PermissionRequest;
 import android.view.ContextThemeWrapper;
 
 import androidx.annotation.StyleRes;
@@ -16,6 +17,9 @@ public class ChromeClient extends WebChromeClient{
     private ContextThemeWrapper contextTheme;
     private int theme;
     private String title;
+    private boolean permCamera = false;
+    private boolean permMicro = false;
+    private boolean permMidi = false;
     public static ValueCallback<Uri[]> mUploadMessage;
     public ChromeClient(Context context, int theme, String title){
         this.context = context;
@@ -98,4 +102,6 @@ public class ChromeClient extends WebChromeClient{
         context.startActivityForResult(intent, 9001);
         return true;
     }
+    @Override
+    public void onPermissionRequest(final PermissionRequest request) {}
 }
