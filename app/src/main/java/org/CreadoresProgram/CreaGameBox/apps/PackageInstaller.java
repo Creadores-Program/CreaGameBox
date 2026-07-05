@@ -11,6 +11,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -55,7 +56,7 @@ public class PackageInstaller extends Activity {
 
             byte[] buffer = new byte[8192];
             
-            updateInterface("Instalando componentes...", 0);
+            updateInterface("Instalando componentes/Installing components...", 0);
 
             while ((entry = zipStream.getNextEntry()) != null) {
                 String entryName = entry.getName();
@@ -152,7 +153,7 @@ public class PackageInstaller extends Activity {
                 } else {
                     permsFormat.append("• Ninguno / None\n");
                 }
-                runOnUiThread(() -> showDialogConfirm(nombreApp, versionApp, permsFormat.toString(), uri, manifest.optString("uuid", "")));
+                runOnUiThread(() -> showDialogConfirm(nameApp, versionApp, permsFormat.toString(), uri, manifest.optString("uuid", UUID.randomUUID().toString())));
 
             } else {
                 Log.e("CGB_INSTALLER", "No se encontró manifest.json dentro del paquete.");
@@ -164,7 +165,7 @@ public class PackageInstaller extends Activity {
             runOnUiThread(() -> txtProgress.setText("Error!"));
         }
     }
-    private void showDialogConfirm(String name, String version, String perms, final Uri fileUri) {
+    private void showDialogConfirm(String name, String version, String perms, final Uri fileUri, final String uuid) {
         String menssage = "Version: " + version + "\n\n" +
                          "Permisos requeridos/Permits required:\n" + perms + "\n" +
                          "¿Deseas instalar esta aplicación/You want to install this application?";
@@ -176,7 +177,7 @@ public class PackageInstaller extends Activity {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new Thread(() -> processAndInstall(fileUri)).start();
+                        new Thread(() -> processAndInstall(fileUri, uuid)).start();
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
