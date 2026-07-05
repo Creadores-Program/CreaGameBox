@@ -58,6 +58,6 @@
       </intent-filter>
       <meta-data android:name="android.accounts.AccountAuthenticator"
         android:resource="@xml/authenticator" />
-     </service>
+    </service>
   </application>
 </manifest>
