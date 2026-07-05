@@ -59,7 +59,7 @@ public class SystemAPIJS extends SystemAPISandboxJS {
     File fileApp = new File(carpetApp, fileName);
     byte dataN = Base64.decode(fileBase64, Base64.NO_WRAP);
     if(fileApp.exists()){
-      if(fileApp.lenght() == dataN.length){
+      if(fileApp.length() == dataN.length){
         FileInputStream fis = null;
         boolean exacts = true;
         try{
@@ -167,7 +167,7 @@ public class SystemAPIJS extends SystemAPISandboxJS {
     String appRute = "apps/"+uuid;
     String[] systemApp = context.getAssets().list(appRute);
     boolean isSistemApp = false;
-    if(systemApp != null && systemApp.lenght > 0){
+    if(systemApp != null && systemApp.length > 0){
       isSistemApp = true;
     }
     File userApp = new File(context.getFilesDir(), appRute);

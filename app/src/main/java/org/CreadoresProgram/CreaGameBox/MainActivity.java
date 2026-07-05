@@ -2,6 +2,7 @@ package org.CreadoresProgram.CreaGameBox;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Build;
 import android.content.Intent;
 import android.net.Uri;
 import android.webkit.WebView;
@@ -26,6 +27,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Security;
+
+import org.conscrypt.Conscrypt;
 
 import org.CreadoresProgram.CreaGameBox.openUrl.OpenURLJS;
 import org.CreadoresProgram.CreaGameBox.profile.*;
@@ -43,6 +47,8 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
   private SystemAPIJS systemApi;
   private SystemAPISandboxJS systemApiSandb;
   private AccountManager accountManager;
+  private DownloadListenerCG downlist;
+  private DownloadListenerCG downlistMarket;
   private int deviceIdP1 = -1;
   private int menuOpen = -1;
   private boolean appOnly1P = false;
@@ -51,6 +57,9 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q){
+      Security.insertProviderAt(Conscrypt.newProvider(), 1);
+    }
     setContentView(R.layout.layout_main);
     this.screenAndroid = findViewById(R.id.creagameboxScreen);
     this.openUrljsApi = new OpenURLJS(this);
@@ -67,6 +76,8 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     ChromeClient chclient = new ChromeClient(this, android.R.style.Theme_Holo_Light_Dialog, "CreaGameBox");
     ThemeJS themejs = new ThemeJS(chclient);
     webViewHome.setWebChromeClient(chclient);
+    this.downlist = new DownloadListenerCG(this, chclient, false);
+    this.downlistMarket = new DownloadListenerCG(this, chclient, true);
     WebSettings webSettings = webViewHome.getSettings();
     webSettings.setJavaScriptEnabled(true);
     webSettings.setDomStorageEnabled(true);
@@ -314,7 +325,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     String appRute = "apps/"+uuid;
     String[] systemApp = this.getAssets().list(appRute);
     boolean isSistemApp = false;
-    if(systemApp != null && systemApp.lenght > 0){
+    if(systemApp != null && systemApp.length > 0){
       isSistemApp = true;
     }
     File userApp = new File(this.getFilesDir(), appRute);
@@ -384,19 +395,27 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
           for (int i = 0; i < permissionsArray.length(); i++) {
             String permission = permissionsArray.optString(i, "");
             if (permission.equals("ALLOW_FILE_ACCESS")) {
-                webSettings.setAllowFileAccess(true);
-            } 
-            else if (permission.equals("ALLOW_CONTENT_ACCESS")) {
-                webSettings.setAllowContentAccess(true);
-            } 
-            else if (permission.equals("ALLOW_FILE_ACCESS_FROM_URLS")) {
-                webSettings.setAllowFileAccessFromFileURLs(true);
-            } 
-            else if (permission.equals("ALLOW_UNIVERSAL_ACCESS_FROM_URLS")) {
-                webSettings.setAllowUniversalAccessFromFileURLs(true);
+              webSettings.setAllowFileAccess(true);
+            }else if (permission.equals("ALLOW_CONTENT_ACCESS")) {
+              webSettings.setAllowContentAccess(true);
+            }else if (permission.equals("ALLOW_FILE_ACCESS_FROM_URLS")) {
+              webSettings.setAllowFileAccessFromFileURLs(true);
+            }else if (permission.equals("ALLOW_UNIVERSAL_ACCESS_FROM_URLS")) {
+              webSettings.setAllowUniversalAccessFromFileURLs(true);
+            }else if(permission.equals("CAMERA")){
+              chclient.setCameraPermission(true);
+            }else if(permission.equals("MICROPHONE")){
+              chclient.setMicrophonePermission(true);
+            }else if(permission.equals("MIDI")){
+              chclient.setMidiPermission(true);
             }
           }
         }
+      }
+      if(manifest.optBoolean("appInstaller", false)){
+        webViewApp.setDownloadListener(this.downlistMarket);
+      }else{
+        webViewApp.setDownloadListener(this.downlist);
       }
       webViewApp.setBackgroundColor(Color.BLACK);
       screenAndroid.addView(webViewApp);
@@ -415,7 +434,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
   public void deleteApp(String uuid){
     String appRute = "apps/"+uuid;
     String[] systemApp = this.getAssets().list(appRute);
-    if(systemApp != null && systemApp.lenght > 0){
+    if(systemApp != null && systemApp.length > 0){
       return;
     }
     File userApp = new File(this.getFilesDir(), appRute);

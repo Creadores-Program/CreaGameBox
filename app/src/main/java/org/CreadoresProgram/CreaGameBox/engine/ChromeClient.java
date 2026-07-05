@@ -34,8 +34,20 @@ public class ChromeClient extends WebChromeClient{
             this.contextTheme.setTheme(theme);
         }
     }
+    public int getTheme(){
+        return this.theme;
+    }
     public void setTitle(String title){
         this.title = title;
+    }
+    public void setCameraPermission(boolean permCamera){
+        this.permCamera = permCamera;
+    }
+    public void setMicrophonePermission(boolean permMicro){
+        this.permMicro = permMicro;
+    }
+    public void setMidiPermission(boolean permMidi){
+        this.permMidi = permMidi;
     }
     @Override
     public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
@@ -103,5 +115,26 @@ public class ChromeClient extends WebChromeClient{
         return true;
     }
     @Override
-    public void onPermissionRequest(final PermissionRequest request) {}
+    public void onPermissionRequest(final PermissionRequest request) {
+        boolean grant = true;
+        for(String permName : request.getResources()){
+            if(PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(resource) && !permMicro){
+                grant = false;
+                break;
+            }
+            if(PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(resource) && !permCamera){
+                grant = false;
+                break;
+            }
+            if(PermissionRequest.RESOURCE_MIDI_SYSEX.equals(resource) && !permMidi){
+                grant = false;
+                break;
+            }
+        }
+        if(grant){
+            request.grant(request.getResources());
+        }else{
+            request.deny();
+        }
+    }
 }
