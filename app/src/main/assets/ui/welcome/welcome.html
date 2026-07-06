@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Welcome</title>
+    <link rel="stylesheet" href="../../themes/ExplosionOfLightBlue.css"/>
+    <link rel="stylesheet" href="../../libs/hideCGB/hideDef.css"/>
+    <link rel="stylesheet" href="./style.css"/>
+</head>
+<body>
+    <script>
+        let lang = SystemAPI.getLang();
+        let supportLangs = ["es", "en", "pt", "fr", "it"];
+        if(!supportLangs.includes(lang)){
+            lang = "en";
+        }
+        window.langjson = {};
+        async function initLang(){
+            try{
+                let res = await fetch("./lang/"+lang+".json");
+                if(!res.ok) throw new Error("File not found");
+                langjson = await res.json();
+            }catch(err){
+                console.warn("No load Lang "+lang+"!, Load En Lang...");
+                try{
+                    let res = await fetch("./lang/en.json");
+                    langjson = await res.json();
+                }catch(crit){
+                    console.error("No load Base lang!", crit);
+                    return;
+                }
+            }
+            let elementsQ = document.querySelectorAll("[langId]");
+            elementsQ.forEach(element => {
+                let arg = element.getAttribute("langId");
+                if(langjson[arg]){
+                    element.textContent = langjson[arg];
+                }else{
+                    console.warn("Invalid key "+arg);
+                }
+            });
+        }
+        document.addEventListener("DOMContentLoaded", initLang);
+        window.traduceKey = function(key){
+            if(langjson[key]){
+                return langjson[key];
+            }else{
+                console.warn("Invalid key "+key);
+                return "";
+            }
+        }
+    </script>
+    <script src="../../libs/spatialNavigation/spatialNavigation.min.js"></script>
+    <script src="./index.js"></script>
+    <div id="welcomeI1"></div>
+    <div id="setProfile" class="hideDef"></div>
+    <div id="hideApps" class="hideDef"></div>
+    <div id="common" class="hideDef"></div>
+</body>
+</html>

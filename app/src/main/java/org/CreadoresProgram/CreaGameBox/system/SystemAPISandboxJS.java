@@ -43,7 +43,7 @@ public class SystemAPISandboxJS{
   }
   @JavascriptInterface
   public String getLang(){
-    return Locale.getDefault().getDisplayLanguage();
+    return Locale.getDefault().getLanguage().toLowerCase();;
   }
   @JavascriptInterface
   public String getCountry(){

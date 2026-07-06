@@ -50,6 +50,16 @@ public class AccountManagerSandboxJS {
             return "";
         }
         String data = accountManager.getUserData(profile, "controllerId");
+        return data != null ? data : "";
+    }
+    @JavascriptInterface
+    public String getLangUser(String name){
+        Account profile = getProfileOnlineByName(name);
+        if(profile == null){
+            return "";
+        }
+        String data = accountManager.getUserData(profile, "lang");
+        return data != null ? data : "en";
     }
     private Account getProfileOnlineByName(String name){
         for(Account profile : this.onlineAccounts){
