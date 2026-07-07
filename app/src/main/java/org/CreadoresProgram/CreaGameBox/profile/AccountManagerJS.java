@@ -9,6 +9,8 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 
+import org.CreadoresProgram.CreaGameBox.MainActivity;
+
 public class AccountManagerJS{
     private Context context;
     private AccountManager accountManager;
@@ -100,6 +102,14 @@ public class AccountManagerJS{
         }else{
             accountManager.removeAccount(profile, null, null);
         }
+    }
+    @JavascriptInterface
+    public void createMenu(String name){
+        Account profile = getProfileByName(name);
+        if(profile == null){
+            return;
+        }
+        ((MainActivity) context).createMenu(profile);
     }
     private Account getProfileOnlineByName(String name){
         for(Account profile : this.onlineAccounts){
