@@ -275,41 +275,7 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
   }
   private void openMenu(Account profile, boolean isOnline){
     if(!isOnline){
-      synchronized(this.onlineAccounts){
-        this.onlineAccounts.add(profile);
-        this.menuOpen = this.onlineAccounts.indexOf(profile);
-      }
-      WebView menuView = new WebView(this);
-      menuView.setLayoutParams(new FrameLayout.LayoutParams(match_parent, match_parent));
-      ChromeClient chclient = new ChromeClient(this, android.R.style.Theme_Holo_Light_Dialog, "CreaGameBox");
-      ThemeJS themejs = new ThemeJS(chclient);
-      menuView.setWebChromeClient(chclient);
-      WebSettings webSettings = menuView.getSettings();
-      webSettings.setJavaScriptEnabled(true);
-      webSettings.setDomStorageEnabled(true);
-      webSettings.setAllowFileAccess(true);
-      webSettings.setAllowContentAccess(true);
-      webSettings.setDatabaseEnabled(true);
-      webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
-      webSettings.setBuiltInZoomControls(false);
-      webSettings.setDisplayZoomControls(false);
-      webSettings.setSupportZoom(false);
-      webSettings.setUseWideViewPort(true);
-      webSettings.setLoadWithOverviewMode(true);
-      webSettings.setMediaPlaybackRequiresUserGesture(false);
-      webSettings.setAppCacheEnabled(true);
-      webSettings.setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
-      webSettings.setAllowFileAccessFromFileURLs(true);
-      webSettings.setAllowUniversalAccessFromFileURLs(true);
-      menuView.setLayerType(WebView.LAYER_TYPE_HARDWARE, null);
-      menuView.addJavascriptInterface(this.openUrljsApi, "OpenURLAPI");
-      menuView.addJavascriptInterface(this.accountManagerSystem, "AccountManagerSystem");
-      menuView.addJavascriptInterface(this.systemApi, "SystemAPI");
-      menuView.addJavascriptInterface(themejs, "Theme");
-      menuView.setBackgroundColor(0x00000000);
-      menuView.loadUrl("file:///android_asset/ui/menu/menu.html?user="+profile.name);
-      screenAndroid.addView(menuView);
-      this.menuUsers.put(Integer.parseInt(accountManager.getUserData(profile, "controllerId")), menuView);
+      createMenu(profile);
     }
     this.menuOpen = this.onlineAccounts.indexOf(profile);
     if(webViewApp != null){
@@ -317,9 +283,44 @@ public class MainActivity extends Activity implements InputManager.InputDeviceLi
     }else{
       stopWebView(webViewHome, false);
     }
-    if(isOnline){
-      startWebView(this.menuUsers.get(Integer.parseInt(accountManager.getUserData(profile, "controllerId"))));
+    startWebView(this.menuUsers.get(Integer.parseInt(accountManager.getUserData(profile, "controllerId"))));
+  }
+  public void createMenu(Account profile){
+    synchronized(this.onlineAccounts){
+      this.onlineAccounts.add(profile);
     }
+    WebView menuView = new WebView(this);
+    menuView.setLayoutParams(new FrameLayout.LayoutParams(match_parent, match_parent));
+    ChromeClient chclient = new ChromeClient(this, android.R.style.Theme_Holo_Light_Dialog, "CreaGameBox");
+    ThemeJS themejs = new ThemeJS(chclient);
+    menuView.setWebChromeClient(chclient);
+    WebSettings webSettings = menuView.getSettings();
+    webSettings.setJavaScriptEnabled(true);
+    webSettings.setDomStorageEnabled(true);
+    webSettings.setAllowFileAccess(true);
+    webSettings.setAllowContentAccess(true);
+    webSettings.setDatabaseEnabled(true);
+    webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+    webSettings.setBuiltInZoomControls(false);
+    webSettings.setDisplayZoomControls(false);
+    webSettings.setSupportZoom(false);
+    webSettings.setUseWideViewPort(true);
+    webSettings.setLoadWithOverviewMode(true);
+    webSettings.setMediaPlaybackRequiresUserGesture(false);
+    webSettings.setAppCacheEnabled(true);
+    webSettings.setAppCachePath(getApplicationContext().getCacheDir().getAbsolutePath());
+    webSettings.setAllowFileAccessFromFileURLs(true);
+    webSettings.setAllowUniversalAccessFromFileURLs(true);
+    menuView.setLayerType(WebView.LAYER_TYPE_HARDWARE, null);
+    menuView.addJavascriptInterface(this.openUrljsApi, "OpenURLAPI");
+    menuView.addJavascriptInterface(this.accountManagerSystem, "AccountManagerSystem");
+    menuView.addJavascriptInterface(this.systemApi, "SystemAPI");
+    menuView.addJavascriptInterface(themejs, "Theme");
+    menuView.setBackgroundColor(0x00000000);
+    menuView.loadUrl("file:///android_asset/ui/menu/menu.html?user="+profile.name);
+    screenAndroid.addView(menuView);
+    this.menuUsers.put(Integer.parseInt(accountManager.getUserData(profile, "controllerId")), menuView);
+    stopWebView(menuView);
   }
   public void openApp(String uuid){
     String appRute = "apps/"+uuid;
