@@ -1,0 +1,91 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: radial-gradient(circle at center, #0c2033 0%, #060a12 100%);
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#welcomeI1 {
+    position: fixed;
+    left: 0%;
+    top: 0%;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4vh 4vw;
+}
+
+#welcomeTitle {
+    font-size: 6.5vw;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5vw;
+    margin-bottom: 6vh;
+    background: linear-gradient(135deg, #00bfff 0%, #18ffe4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 3vw rgba(24, 255, 228, 0.25);
+    text-align: center;
+}
+
+#welcomeBlueBtn, #welcomeCommonBtn {
+    width: 34vw;
+    height: 9vh;
+    margin: 2vh 0;
+    font-size: 1.8vw;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15vw;
+    cursor: pointer;
+    border: 0.3vw solid transparent;
+    border-radius: 1vw;
+    outline: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#welcomeBlueBtn {
+    background: #0c425a;
+    border-color: rgba(24, 255, 228, 0.4);
+    box-shadow: 0 0.5vh 2vw rgba(12, 66, 90, 0.4);
+}
+
+#welcomeCommonBtn {
+    background: linear-gradient(135deg, #0c425a 0%, #082d3d 100%);
+    border: 0.3vw solid #18ffe4;
+    box-shadow: 0 0.5vh 2.5vw rgba(24, 255, 228, 0.15);
+}
+
+#welcomeBlueBtn:focus, #welcomeBlueBtn:hover {
+    transform: scale(1.05);
+    background: #0c435ad5;
+    outline: 0.4vw solid white;
+    border-color: #18ffe4;
+    box-shadow: 0 0 3vw rgba(24, 255, 228, 0.6);
+}
+
+#welcomeCommonBtn:focus, #welcomeCommonBtn:hover {
+    transform: scale(1.05);
+    background: #18ffe4;
+    color: #060a12;
+    outline: 0.4vw solid white;
+    border-color: #00bfff;
+    box-shadow: 0 0 3.5vw rgba(0, 191, 255, 0.7);
+}
