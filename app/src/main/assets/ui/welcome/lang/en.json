@@ -1,3 +1,5 @@
 {
-    "bienvenido": "Welcome!"
+    "bienvenido": "Welcome!",
+    "ajustesbluetooth": "Do not have a Gamepad connected? Open Bluetooth Settings",
+    "empezar": "Start"
 }

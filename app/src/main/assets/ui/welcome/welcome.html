@@ -55,6 +55,14 @@
     <script src="./index.js"></script>
     <div id="welcomeI1">
         <h1 langId="bienvenido" id="welcomeTitle"></h1>
+        <button langId="ajustesbluetooth" id="welcomeBlueBtn"></button><br/>
+        <button langId="empezar" id="welcomeCommonBtn"></button>
+    </div>
+    <div id="requestPerms" class="hideDef">
+        <h1 langId="permisos" id="permsTitle"></h1>
+        <button langId="pedirpermisos" id="permsReqBtn" onclick="SystemAPI.requestPerms();"></button><br/>
+        <p langId="permisosdescripcion" id="permsDesBtn"></p><br/>
+        <button langId="siguiente" id="reqPermsCommonBtn"></button>
     </div>
     <div id="setProfile" class="hideDef"></div>
     <div id="hideApps" class="hideDef"></div>

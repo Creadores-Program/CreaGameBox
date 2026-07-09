@@ -89,3 +89,98 @@ body {
     border-color: #00bfff;
     box-shadow: 0 0 3.5vw rgba(0, 191, 255, 0.7);
 }
+
+#requestPerms {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, #0c2033 0%, #060a12 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4vh 6vw;
+    overflow: hidden;
+    z-index: 10;
+}
+
+#permsTitle {
+    font-size: 5vw;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3vw;
+    margin-bottom: 4vh;
+    background: linear-gradient(135deg, #00bfff 0%, #18ffe4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 3vw rgba(24, 255, 228, 0.2);
+    text-align: center;
+}
+
+#permsDesBtn {
+    font-size: 1.6vw;
+    color: #a0aec0;
+    max-width: 60vw;
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 5vh;
+    font-weight: 400;
+}
+
+#permsReqBtn, #reqPermsCommonBtn {
+    width: 34vw;
+    height: 9vh;
+    font-size: 1.8vw;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15vw;
+    cursor: pointer;
+    border: 0.3vw solid transparent;
+    border-radius: 1vw;
+    outline: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+#permsReqBtn {
+    background: #0c425a;
+    border-color: rgba(24, 255, 228, 0.4);
+    box-shadow: 0 0.5vh 2vw rgba(12, 66, 90, 0.4);
+}
+
+#reqPermsCommonBtn {
+    background: linear-gradient(135deg, #0c425a 0%, #082d3d 100%);
+    border: 0.3vw solid #18ffe4;
+    box-shadow: 0 0.5vh 2.5vw rgba(24, 255, 228, 0.15);
+}
+
+#requestPerms br {
+    display: none;
+}
+
+#permsReqBtn {
+    margin-bottom: 3vh;
+}
+
+#permsReqBtn:focus, #permsReqBtn:hover {
+    transform: scale(1.05);
+    background: #0c435ad5;
+    outline: 0.4vw solid white;
+    border-color: #18ffe4;
+    box-shadow: 0 0 3vw rgba(24, 255, 228, 0.6);
+}
+
+#reqPermsCommonBtn:focus, #reqPermsCommonBtn:hover {
+    transform: scale(1.05);
+    background: #18ffe4;
+    color: #060a12;
+    outline: 0.4vw solid white;
+    border-color: #00bfff;
+    box-shadow: 0 0 3.5vw rgba(0, 191, 255, 0.7);
+}
