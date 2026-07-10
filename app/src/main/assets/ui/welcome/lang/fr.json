@@ -1,5 +1,7 @@
 {
     "bienvenido": "Bienvenue!",
     "ajustesbluetooth": "Vous n'avez pas de Gamepad connecté? Ouvrir les paramètres Bluetooth",
-    "empezar": "Début"
+    "empezar": "Début",
+    "permisos": "Permissions",
+    "pedirpermisos": "Accepter Les Autorisations"
 }
