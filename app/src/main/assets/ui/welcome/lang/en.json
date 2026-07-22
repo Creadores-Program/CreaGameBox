@@ -3,5 +3,6 @@
     "ajustesbluetooth": "Do not have a Gamepad connected? Open Bluetooth Settings",
     "empezar": "Start",
     "permisos": "Permissions",
-    "pedirpermisos": "Accept Permissions"
+    "pedirpermisos": "Accept Permissions",
+    "permisosdescripcion": ""
 }

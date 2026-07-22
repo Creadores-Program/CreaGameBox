@@ -3,5 +3,6 @@
     "ajustesbluetooth": "No tienes un Gamepad conectado? Abrir Ajustes de Bluetooth",
     "empezar": "Empezar",
     "permisos": "Permisos",
-    "pedirpermisos": "Aceptar Permisos"
+    "pedirpermisos": "Aceptar Permisos",
+    "permisosdescripcion": "* Microfono: Posible uso de apps CreaGameBox (ignorar si tu dispositivo no tiene)\n* Camara: Posible uso de apps CreaGameBox (ignorar si tu dispositivo no tiene)\n* Almacenamiento: para guardar archivos de apps CreaGameBox como Imagenes u obtener para fondo de pantalla personalizado, funciones de personalización y más!"
 }
