@@ -55,16 +55,27 @@
     <script src="./index.js"></script>
     <div id="welcomeI1">
         <h1 langId="bienvenido" id="welcomeTitle"></h1>
-        <button langId="ajustesbluetooth" id="welcomeBlueBtn"></button><br/>
-        <button langId="empezar" id="welcomeCommonBtn"></button>
+        <button langId="ajustesbluetooth" id="welcomeBlueBtn" onclick=""></button><br/>
+        <button langId="empezar" id="welcomeCommonBtn" onclick="if(SystemAPI.getDeviceIdP1() < 0){ alert(window.langjson.noControl); }else{ this.parentElement.style.display = 'none'; document.getElementById('requestPerms').style.display = 'block'; }"></button>
     </div>
     <div id="requestPerms" class="hideDef">
         <h1 langId="permisos" id="permsTitle"></h1>
         <button langId="pedirpermisos" id="permsReqBtn" onclick="SystemAPI.requestPerms();"></button><br/>
         <p langId="permisosdescripcion" id="permsDesBtn"></p><br/>
-        <button langId="siguiente" id="reqPermsCommonBtn"></button>
+        <button langId="siguiente" id="reqPermsCommonBtn" onclick="this.parentElement.style.display = 'none'; document.getElementById('setProfile').style.display = 'block';"></button>
     </div>
-    <div id="setProfile" class="hideDef"></div>
+    <div id="setProfile" class="hideDef">
+        <h2 langId="perfil" id="profileTitle"></h2>
+        <div id="avatarContiner">
+            <div class="avatar-wrapper" id="avatarClickable" onclick="abrirModalAvatar()">
+                <img id="avatarImage" src="./...">
+                <div class="avatar-overlay">
+                    <span langId="cambiar"></span>
+                </div>
+            </div>
+            <input type="file" id="gamerAvatarInput" accept="image/*" class="hideDef" onchange="cargarImagenLocal(event)"/>
+        </div>
+    </div>
     <div id="hideApps" class="hideDef"></div>
     <div id="common" class="hideDef"></div>
 </body>

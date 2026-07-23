@@ -4,5 +4,7 @@
     "empezar": "Début",
     "permisos": "Permissions",
     "pedirpermisos": "Accepter Les Autorisations",
-    "permisosdescripcion": ""
+    "permisosdescripcion": "* Microphone: Utilisation possible des applications CreaGameBox (ignorez si votre appareil n'a pas)\n* Appareil photo: Utilisation possible des applications CreaGameBox (ignorez si votre appareil n'a pas)\n* Stockage: pour enregistrer des fichiers à partir d'applications CreaGameBox telles que des images ou obtenir pour le fond d'écran personnalisé, les fonctionnalités de personnalisation et plus encore!",
+    "siguiente": "Suivant",
+    "noControl": "D'abord connecter un Gamepad !"
 }
